@@ -74,8 +74,8 @@ class Settings(BaseSettings):
     # ==========================================
     # Exchange APIs
     # ==========================================
-    BINANCE_API_KEY: str = Field(default="")
-    BINANCE_API_SECRET: str = Field(default="")
+    BYBIT_API_KEY: str = Field(default="")
+    BYBIT_API_SECRET: str = Field(default="")
     COINBASE_API_KEY: str = Field(default="")
     COINBASE_API_SECRET: str = Field(default="")
 

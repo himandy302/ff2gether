@@ -1,0 +1,51 @@
+# Core dependencies
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Async & Web
+asyncio>=3.4.3
+aiohttp>=3.9.0
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+websockets>=12.0
+
+# Database
+sqlalchemy>=2.0.25
+asyncpg>=0.29.0
+psycopg2-binary>=2.9.9
+alembic>=1.13.1
+redis>=5.0.1
+
+# API Clients
+ccxt>=4.2.0
+py-clob-client>=0.25.0
+web3>=6.15.0
+
+# Data Processing
+pandas>=2.2.0
+polars>=0.20.0
+numpy>=1.26.3
+scikit-learn>=1.4.0
+scipy>=1.12.0
+
+# Technical Analysis
+# ta-lib>=0.4.28  # Requires system-level TA-Lib installation
+pandas-ta>=0.3.14b
+
+# Monitoring & Logging
+structlog>=24.1.0
+prometheus-client>=0.19.0
+
+# Utilities
+python-dateutil>=2.8.2
+pytz>=2024.1
+httpx>=0.26.0
+
+# Development dependencies (optional)
+# pytest>=7.4.4
+# pytest-asyncio>=0.23.3
+# pytest-cov>=4.1.0
+# black>=24.1.0
+# isort>=5.13.2
+# mypy>=1.8.0

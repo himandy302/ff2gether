@@ -247,7 +247,7 @@ class SystemEvent(Base):
     event_type = Column(String(50), index=True)  # 'error', 'warning', 'info'
     component = Column(String(50))  # 'market_discovery', 'price_monitor', etc.
     message = Column(Text)
-    metadata = Column(JSONB)
+    event_metadata = Column('metadata', JSONB)  # Renamed to avoid SQLAlchemy conflict
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
