@@ -1,0 +1,52 @@
+# Risk Management Parameters
+# These parameters control position sizing, exposure limits, and circuit breakers
+
+capital_management:
+  initial_capital: 10000  # USD
+  reserve_buffer: 0.05  # Keep 5% in reserve
+
+position_sizing:
+  max_per_trade_pct: 0.02  # 2% of capital per trade
+  max_per_trade_abs: 200  # $200 absolute maximum
+  min_per_trade_abs: 10  # $10 minimum trade size
+  kelly_multiplier: 0.25  # Use 1/4 Kelly for safety
+
+exposure_limits:
+  max_concurrent_positions: 5  # Maximum open positions at once
+  max_exposure_pct: 0.20  # Max 20% of capital deployed
+  max_exposure_per_market: 0.10  # Max 10% in single market
+
+drawdown_protection:
+  max_daily_loss_pct: 0.05  # Stop trading at -5% daily loss
+  max_drawdown_from_peak_pct: 0.15  # Stop at -15% drawdown
+  cooldown_period_minutes: 60  # Wait 1 hour after circuit breaker
+
+circuit_breakers:
+  max_consecutive_losses: 5  # Pause after 5 losses in a row
+  max_hourly_trades: 20  # Prevent overtrading
+  min_account_balance: 100  # Stop if balance drops below $100
+  max_slippage_pct: 0.05  # 5% max slippage tolerance
+
+volatility_adjustments:
+  # Reduce position size during high volatility
+  enable_volatility_scaling: true
+  volatility_lookback_periods: 20
+  high_volatility_threshold: 2.0  # 2x normal volatility
+  high_volatility_multiplier: 0.5  # Reduce size by 50%
+
+trade_frequency:
+  min_time_between_trades_seconds: 30
+  max_trades_per_hour: 20
+  max_trades_per_day: 100
+
+# Win streak management (optional)
+win_streak_management:
+  enable: false
+  after_n_wins: 10
+  reduce_size_by_pct: 0.30  # Reduce by 30% after 10 wins
+
+# Loss management
+loss_management:
+  enable_progressive_reduction: true
+  after_loss_reduce_by: 0.10  # Reduce next trade by 10% after loss
+  recovery_multiplier: 1.0  # Return to normal after win

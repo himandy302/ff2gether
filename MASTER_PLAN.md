@@ -19,6 +19,8 @@
 9. [Implementation Roadmap](#implementation-roadmap)
 10. [Project Structure](#project-structure)
 11. [Key Considerations](#key-considerations)
+12. [Probability of Success](#probability-of-success)
+13. [Plan Upgrades](#plan-upgrades)
 
 ---
 
@@ -1304,6 +1306,106 @@ The momentum-to-probability model needs real calibration:
 - Polymarket changes fee structure unfavorably
 - You can't explain why trades are winning/losing
 - You're no longer learning anything new
+
+---
+
+## Probability of Success
+
+### Bottom-Line Assessment (Qualitative)
+
+**Current probability of achieving sustained profitability after full costs**: **Low to Medium (20-40%)**
+
+**Why not higher**:
+- This edge is widely known; competition compresses pricing quickly.
+- Polymarket fees and dynamic fee changes directly target latency arbitrage.
+- Execution latency, partial fills, and thin liquidity can erase small edges.
+- 15-minute markets are noisy; short-term momentum can mean-revert fast.
+
+**Why not lower**:
+- Spot price movement does contain short-term persistence during high momentum.
+- Many retail Polymarket participants still price based on intuition rather than microstructure.
+- A disciplined system with strict filters may find occasional high-EV opportunities.
+
+### Key Success Drivers (Ranked)
+
+1. **Realistic backtest + paper trading results** that show edge survives fees/slippage.
+2. **Execution speed and reliability** (order placement latency, orderbook freshness).
+3. **Liquidity-aware trade sizing** that avoids moving the market.
+4. **Calibration of the momentum → win probability model** using recent data only.
+5. **Monitoring edge decay** and stopping quickly when it degrades.
+
+### Failure Modes to Plan Around
+
+- **False edge**: backtest overstates performance due to data leakage or survivorship bias.
+- **Latency mismatch**: price feed shows momentum, but order placement hits stale pricing.
+- **Liquidity traps**: best ask is tiny; real fill price is worse than expected.
+- **Dynamic fee changes**: Polymarket fee increases reduce net EV to negative.
+- **Regime shifts**: volatility spikes or flat periods break momentum assumptions.
+
+### Go / No-Go Gates (Objective)
+
+**Go** only if all are true after paper trading:
+- Net win rate (after fees/slippage) ≥ 58% over 300+ trades.
+- Average net EV per trade ≥ 5%.
+- Max drawdown ≤ 12%.
+- Order execution success ≥ 98% with median latency < 2 seconds.
+
+**No-Go** if any are true:
+- Win rate < 55% for 3 consecutive weeks.
+- Average net EV < 3% for 1 month.
+- Slippage > 1.5x modeled slippage for 2 weeks.
+
+---
+
+## Plan Upgrades
+
+### 1) Data & Backtesting Upgrades (Critical)
+
+- **Use tick-level data alignment**: Match Polymarket orderbook snapshots with exchange ticks by timestamp, not just minute bars.
+- **Model execution realistically**: Use best-ask/bid sizes, partial fills, and a slippage model.
+- **Include dynamic fees**: Encode Polymarket fee schedule historically, or test ranges.
+- **Holdout evaluation**: 60/20/20 split (train/validate/test) by time, not random.
+- **Walk-forward testing**: Monthly rolling retrain + evaluate the next month.
+
+### 2) Signal Model Improvements
+
+- **Feature expansion** (low complexity first): 
+  - Momentum slope, volatility, range compression, orderbook imbalance, time-of-day.
+  - Cross-exchange divergence (Binance vs Coinbase) as a shock indicator.
+- **Probability calibration**:
+  - Use Platt scaling or isotonic regression to calibrate outputs.
+  - Track calibration drift weekly.
+- **Confidence gating**:
+  - Trade only when model confidence is in top X percentile for that day.
+
+### 3) Execution & Infrastructure Upgrades
+
+- **Event-driven order placement**: Trigger by orderbook update, not polling.
+- **Latency telemetry**: Measure end-to-end latency (signal → order accepted → fill).
+- **Smart order sizing**:
+  - Cap by visible liquidity at best price to reduce slippage.
+  - Split orders if market depth supports it.
+- **Resilience**:
+  - Automatic failover between data sources.
+  - Graceful degradation if a data feed drops.
+
+### 4) Risk & Capital Controls
+
+- **Volatility-based position scaling**: Reduce size when short-term volatility spikes.
+- **Trade frequency governor**: Max trades per hour to prevent overtrading.
+- **Profit lockout**: After a large winning streak, reduce size for the next N trades.
+
+### 5) Market Selection Expansion (Optional)
+
+- Test additional markets with similar structure (ETH 15-min, top altcoins).
+- Only expand once BTC strategy is positive for 6+ weeks.
+- Keep separate models per asset to avoid mixing regimes.
+
+### 6) Operational Safety & Compliance
+
+- **Legal check** per jurisdiction before live trading.
+- **Account hygiene**: Rotate API keys, enforce IP allowlisting.
+- **Incident runbook**: Document steps for outages, API bans, or abnormal fills.
 
 ---
 
